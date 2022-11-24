@@ -10,7 +10,6 @@ import taxi.exception.ValidationException;
 import taxi.lib.Injector;
 import taxi.model.Driver;
 import taxi.service.DriverService;
-import taxi.service.EncryptionService;
 import taxi.service.ValidationService;
 
 public class AddDriverController extends HttpServlet {
@@ -19,8 +18,6 @@ public class AddDriverController extends HttpServlet {
             .getInstance(DriverService.class);
     private final ValidationService validationService = (ValidationService) injector
             .getInstance(ValidationService.class);
-    private final EncryptionService encryptionService =
-            (EncryptionService) injector.getInstance(EncryptionService.class);
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -61,7 +58,7 @@ public class AddDriverController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/drivers/add.jsp").forward(req, resp);
         } catch (NoSuchElementException e) {
             Driver driver =
-                    new Driver(name, licenseNumber, login, encryptionService.encrypt(password));
+                    new Driver(name, licenseNumber, login, password);
             driverService.create(driver);
             resp.sendRedirect(req.getContextPath() + "/login");
         }
